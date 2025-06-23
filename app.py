@@ -33,6 +33,7 @@ CARRIER_GATEWAY_MAP = {
     "Verizon Wireless": "vzwpix.com",
     "AT&T": "mms.att.net",
     "T-Mobile": "tmomail.net",
+    "T-Mobile USA, Inc.": "tmomail.net",
     "Sprint": "pm.sprint.com",
     "US Cellular": "mms.uscc.net",
     "Boost Mobile": "myboostmobile.com",
