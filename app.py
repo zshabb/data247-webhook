@@ -19,8 +19,13 @@ EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
 MESSAGE_TEMPLATES = {
-    "locksmith": "For locksmith service, call: (877) 772-3322",
-    "hvac": "For AC service, call: (877) 700-1122"
+    "locksmith": "For Locksmith Service, call: (877) 406-1684",
+    "hvac": "For AC Service, call: (855) 539-0127",
+    "plumbing": "For Plumbing Service, call: (844) 655-8383",
+    "electrician": "For Electrician Service, call: (773) 337-2221 ",
+    "roofing": "For Roofing service, call: (773) 337-2298",
+    "garage door": "For Garage Door Service, call: (855) 583-7986",
+    "dumpster": "For Dumpster Rental, call: (855) 482 0825"
 }
 
 # Map carrier names to their MMS gateways
@@ -29,7 +34,23 @@ CARRIER_GATEWAY_MAP = {
     "AT&T": "mms.att.net",
     "T-Mobile": "tmomail.net",
     "Sprint": "pm.sprint.com",
-    "US Cellular": "mms.uscc.net"
+    "US Cellular": "mms.uscc.net",
+    "Boost Mobile": "myboostmobile.com",
+    "Cricket": "mms.cricketwireless.net",
+    "Google Fi": "msg.fi.google.com",
+    "MetroPCS": "mymetropcs.com",
+    "Republic Wireless": "text.republicwireless.com",
+    "Straight Talk": "vzwpix.com",  # Typically uses Verizon’s gateway
+    "Tracfone": "mmst5.tracfone.com",
+    "Virgin Mobile": "vmobl.com",
+    "Xfinity Mobile": "vzwpix.com",  # Uses Verizon's network
+    "Consumer Cellular": "mailmymobile.net",
+    "C Spire": "cspire1.com",
+    "Page Plus": "vzwpix.com",
+    "Ting": "message.ting.com",
+    "FreedomPop": "txt.att.net",  # Network dependent
+    "Net10": "mms.att.net",       # Network dependent
+    "Visible": "vzwpix.com"
 }
 
 app = Flask(__name__)
