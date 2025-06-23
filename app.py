@@ -86,4 +86,5 @@ def webhook_handler():
     return jsonify({"success": success}), 200 if success else 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
