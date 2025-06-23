@@ -32,6 +32,7 @@ MESSAGE_TEMPLATES = {
 CARRIER_GATEWAY_MAP = {
     "Verizon Wireless": "vzwpix.com",
     "AT&T": "mms.att.net",
+    "AT&T Wireless": "mms.att.net",
     "T-Mobile": "tmomail.net",
     "T-Mobile USA, Inc.": "tmomail.net",
     "Sprint": "pm.sprint.com",
