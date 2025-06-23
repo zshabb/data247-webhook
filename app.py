@@ -1,14 +1,16 @@
+import os
 from flask import Flask, request, jsonify
 import requests
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-DATA247_API_KEY = "YOUR_DATA247_API_KEY"
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
-EMAIL_ADDRESS = "your.email@gmail.com"
-EMAIL_PASSWORD = "your_app_password"
+# Load from environment
+DATA247_API_KEY = os.getenv("DATA247_API_KEY")
+SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
 MESSAGE_TEMPLATES = {
     "locksmith": "For locksmith service, call: (877) 772-3322",
@@ -20,32 +22,22 @@ app = Flask(__name__)
 def get_mms_gateway(phone_number):
     url = "https://api.data247.com/v3.0"
     params = {"key": DATA247_API_KEY, "api": "MT", "phone": phone_number}
-    try:
-        resp = requests.get(url, params=params)
-        resp.raise_for_status()
-        data = resp.json()
-        return data.get("mmsGateway") if data.get("status") == "OK" else None
-    except Exception as e:
-        print("Gateway error:", e)
-        return None
+    resp = requests.get(url, params=params)
+    resp.raise_for_status()
+    data = resp.json()
+    return data.get("mmsGateway") if data.get("status") == "OK" else None
 
 def send_email(to_address, body):
-    try:
-        msg = MIMEMultipart()
-        msg['From'] = EMAIL_ADDRESS
-        msg['To'] = to_address
-        msg['Subject'] = ""
-        msg.attach(MIMEText(body, 'plain'))
+    msg = MIMEText(body, 'plain')
+    msg['From'] = EMAIL_ADDRESS
+    msg['To'] = to_address
+    msg['Subject'] = ""
 
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls()
-        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-        server.send_message(msg)
-        server.quit()
-        return True
-    except Exception as e:
-        print("Email error:", e)
-        return False
+    server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+    server.starttls()
+    server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+    server.send_message(msg)
+    server.quit()
 
 @app.route("/send-text", methods=["POST"])
 def webhook_handler():
@@ -55,13 +47,15 @@ def webhook_handler():
     if not phone or msg_type not in MESSAGE_TEMPLATES:
         return jsonify({"success": False, "error": "Invalid input"}), 400
 
-    message = MESSAGE_TEMPLATES[msg_type]
     gateway = get_mms_gateway(phone)
     if not gateway:
         return jsonify({"success": False, "error": "Could not get gateway"}), 500
 
-    success = send_email(gateway, message)
-    return jsonify({"success": success}), 200 if success else 500
+    try:
+        send_email(gateway, MESSAGE_TEMPLATES[msg_type])
+        return jsonify({"success": True, "gateway": gateway}), 200
+    except Exception:
+        return jsonify({"success": False, "error": "Email send failed"}), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
